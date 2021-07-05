@@ -1,21 +1,48 @@
-import React from 'react';
-import { View, Text, StyleSheet, TextInput, Button } from 'react-native';
+import React, { useState } from 'react';
+import { View, Text, StyleSheet, TextInput, Button, TouchableWithoutFeedback, Keyboard } from 'react-native';
 
 import Card from '../components/Card';
+import Input from '../components/Input';
+import Color from '../constants/Color';
 
 const StartGameScreen = props => {
+  const [enteredValue, setEnteredValue] = useState('');
+
+  const numberInputHandler = inputText => {
+    setEnteredValue(inputText.replace(/[^0-9]/g,''));
+  };
+
   return (
-    <View style={styles.screen}>
-      <Text style={styles.title}>Start a New Game!</Text>
-      <Card style={styles.inputContainer}>
-        <Text>Select a Number</Text>
-        <TextInput />
-        <View style={styles.buttonContainer}>
-          <Button title="Reset" onPress={() => {}} />
-          <Button title="Confirm" onPress={() => {}} />
-        </View>
-      </Card>
-    </View>
+    <TouchableWithoutFeedback
+      onPress={() => {
+        Keyboard.dismiss();
+      }}
+    >
+      <View style={styles.screen}>
+        <Text style={styles.title}>Start a New Game!</Text>
+        <Card style={styles.inputContainer}>
+          <Text>Select a Number</Text>
+          <Input 
+            style={styles.input}
+            blurOnSubmit
+            autoCapitalize='none'
+            autoCorrect={false}
+            keyboardType='number-pad'
+            maxLength={2}
+            onChangeText={numberInputHandler}
+            value={enteredValue}
+          />
+          <View style={styles.buttonContainer}>
+            <View style={styles.button}>
+              <Button title="Reset" onPress={() => {}} color= {Color.accent} />
+            </View>
+            <View style={styles.button}>
+              <Button title="Confirm" onPress={() => {}}  color= {Color.primary}/>
+            </View>
+          </View>
+        </Card>
+      </View>
+    </TouchableWithoutFeedback>
   );
 };
 
@@ -39,6 +66,13 @@ const styles = StyleSheet.create({
     width: '100%',
     justifyContent: 'space-between',
     paddingHorizontal: 15
+  },
+  button: {
+    width: 100
+  },
+  input: {
+    width: 50,
+    textAlign: 'center'
   }
 });
 
