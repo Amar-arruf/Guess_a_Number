@@ -1,6 +1,6 @@
 import React, {useState} from 'react';
 import { StyleSheet, View } from 'react-native';
-import {useFonts } from 'expo-font';
+import * as Font from 'expo-font';
 import AppLoading from 'expo-app-loading';
 
 import Header from './components/Header';
@@ -8,25 +8,29 @@ import StartGameScreen from './screen/StartGameScreen';
 import GameScreen from './screen/GameScreen';
 import GameOverScreen from './screen/GameOVerScreen';
 
-// const fetchFonts = () => {
-//   return Font.loadAsync({
-//     'open-sans': require('./assets/fonts/OpenSans-Regular.ttf'),
-//     'open-sans-bold': require('./assets/fonts/OpenSans-Bold.ttf')
-//   });
-// };
+const fetchFonts = () => {
+  return Font.loadAsync({
+    'open-sans': require('./assets/fonts/OpenSans-Regular.ttf'),
+    'open-sans-bold': require('./assets/fonts/OpenSans-Bold.ttf')
+  });
+};
 
 export default function App() {
   const [guessRounds, setGuessRounds] = useState(0);
   const [userNumber, setUserNumber] = useState();
   const [dataLoaded, setDataLoaded] = useState(false);
-  let [FontsLoaded] = useFonts ({
-    'open-sans': require('./assets/fonts/OpenSans-Regular.ttf'),
-    'open-sans-bold': require('./assets/fonts/OpenSans-Bold.ttf')
-  });
+  // let [FontsLoaded] = useFonts ({
+  //   'open-sans': require('./assets/fonts/OpenSans-Regular.ttf'),
+  //   'open-sans-bold': require('./assets/fonts/OpenSans-Bold.ttf')
+  // });
 
-if (!FontsLoaded) {
+if (!dataLoaded) {
   return (
-    <AppLoading />
+    <AppLoading 
+      startAsync={fetchFonts}
+      onFinish={()=> setDataLoaded(true)}
+      onError={err => console.log(err)}
+    />
   );
 };
   const configureNewGameHandler = () => {
