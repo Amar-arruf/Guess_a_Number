@@ -1,5 +1,5 @@
 import React, {useState, useRef, useEffect} from 'react';
-import {View , Text,  StyleSheet, Alert, ScrollView} from 'react-native';
+import {View , Text,  StyleSheet, Alert, ScrollView, FlatList} from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 
 import NumberContainer from '../components/NumberContainer';
@@ -19,10 +19,10 @@ const GeneretedRandumBetween = (min, max, exclude) => {
   }
 };
 
-const renderListItem = (value, numOfRound) => (
-  <View key={value} style={styles.listItem}>
-    <BodyText>#{numOfRound}</BodyText>
-    <BodyText>{value}</BodyText>
+const renderListItem = (listLength, itemData) => (
+  <View style={styles.listItem}>
+    <BodyText>#{listLength = itemData.index}</BodyText>
+    <BodyText>{itemData.item}</BodyText>
   </View>
 );
 
@@ -30,7 +30,7 @@ const renderListItem = (value, numOfRound) => (
 const GameScreen = props => {
   const initialGuess = GeneretedRandumBetween(1,100,props.userChoice); 
   const [currentGuess, setCurrentGuess] = useState(initialGuess);
-  const [pastGuess, setPastGuess] = useState([initialGuess]);
+  const [pastGuess, setPastGuess] = useState([initialGuess.toString()]);
   const currentLow = useRef(1);
   const currentHigh = useRef(100);
 
@@ -64,7 +64,7 @@ const GameScreen = props => {
     );
     setCurrentGuess(nextNumber);
     // setRounds(curRounds => curRounds + 1);
-    setPastGuess(curPastGuesses => [nextNumber, ...curPastGuesses])
+    setPastGuess(curPastGuesses => [nextNumber.toString(), ...curPastGuesses])
   };
 
   return (
@@ -80,9 +80,12 @@ const GameScreen = props => {
         </MainButton>
       </Card>
       <View style={styles.listContainer}>
-        <ScrollView contentContainerStyle={styles.list}>
-          {pastGuess.map((guess, index) => renderListItem(guess, pastGuess.length - index))}
-        </ScrollView>
+      <FlatList
+          keyExtractor={item => item}
+          data={pastGuess}
+          renderItem={renderListItem.bind(this, pastGuess.length)}
+          contentContainerStyle={styles.list}
+        />
       </View>
     </View>
   );
@@ -103,11 +106,11 @@ const styles = StyleSheet.create({
   },
   listContainer: {
     flex: 1,
-    width: '80%'
+    width: '60%'
   },
   list: {
     flexGrow: 1,
-    alignItems: 'center',
+    // alignItems: 'center',
     justifyContent: 'flex-end'
   },
   listItem: {
@@ -118,7 +121,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
     flexDirection: 'row',
     justifyContent: 'space-between',
-    width: '60%'
+    width: '100%'
   }
 });
 
